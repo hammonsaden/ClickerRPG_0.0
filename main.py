@@ -1,5 +1,5 @@
 import pygame
-from settings import *
+from constants import *
 from ui import UI
 from player import Player
 from enemy import Enemy
@@ -24,13 +24,28 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         mouse_pos = pygame.mouse.get_pos()
-                        if self.UI.clicked(self.state, mouse_pos):
-                            if self.state == 'main':
-                                self.state = 'shop'
-                            elif self.state == 'shop':
-                                self.state = 'main'
+                        # Inside the run method
+                        print(f"Current State: {self.state}")
+                        if self.UI.shop_button.collidepoint(mouse_pos) and self.UI.shop_isclick == True:
+                            print("Shop Button Clicked!")
+                            self.UI.shopclose_isclick = True
+                            self.state = "shop"
+                        elif self.UI.invo_button.collidepoint(mouse_pos) and self.UI.invo_isclick == True:
+                            print("Inventory Button Clicked!")
+                            self.Player.invo_load()
+                            self.UI.invoclose_isclick = True
+                            self.state = "invo"
                         elif self.Enemy.hit(self.state, mouse_pos):
                             pass
+                        else:
+                            pass
+
+
+                        if self.UI.invo_close.collidepoint(mouse_pos) and self.UI.invoclose_isclick == True:
+                            self.state = 'main'
+                        elif self.UI.shop_close.collidepoint(mouse_pos) and self.UI.shopclose_isclick == True:
+                            self.state = 'main'
+
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_1:
                         if self.Player.is_casting == False:
@@ -44,6 +59,9 @@ class Game:
 
             elif self.state == "shop":
                 self.UI.shop_screen(self.Player)
+
+            elif self.state == "invo":
+                self.UI.inventory_screen(self.Player)
 
             pygame.display.update()
 

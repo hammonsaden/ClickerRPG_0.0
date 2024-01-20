@@ -45,7 +45,7 @@ class Enemy:
             self.health = self.max_health
             self.monster_spawn = True
             Player.xp += self.xp_val
-            print(f"XP BAR: {Player.xp} / {Player.xp_needed}")
+            Player.invo_save()
 
 
     def attack(self, dt):

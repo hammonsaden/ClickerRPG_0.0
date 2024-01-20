@@ -1,5 +1,6 @@
 import pygame
-
+from constants import *
+import pickle
 
 class Player:
     def __init__(self):
@@ -39,10 +40,26 @@ class Player:
            }
        }
 
+        # Inventory
+       self.inventory = {
+           'slot 1' : {"name" : "Twisted Wooden Staff"}, 
+           'slot 2' : {"name" : "Empty"},
+           'slot 3' : {"name" : "Empty"},
+           'slot 4' : {"name" : "Empty"},
+           'slot 5' : {"name" : "Empty"},
+           'slot 6' : {"name" : "Empty"}
+       }
     def player_draw(self, screen, font):
 
         # Skill Slots
+        if self.current_spells[0] == 'fireball':
+            skill1_img = pygame.image.load(FIREBALL_IMG)
+            skill1_img_scaled = pygame.transform.scale(skill1_img, (45, 45))
+            screen.blit(skill1_img_scaled, (2, 622))
+        
         self.skill1 = pygame.draw.rect(screen, 'white', (0, 620, 50, 50), 1, border_radius=10)
+        skill1_text = font.render('1', True, 'black')
+        screen.blit(skill1_text, (5, 622))
         self.skill2 = pygame.draw.rect(screen, 'white', (55, 620, 50, 50), 1, border_radius=10)
         self.skill3 = pygame.draw.rect(screen, 'white', (110, 620, 50, 50), 1, border_radius=10)
         self.skill4 = pygame.draw.rect(screen, 'white', (165, 620, 50, 50), 1, border_radius=10)
@@ -103,3 +120,14 @@ class Player:
                 self.castbar_start_time = 0
             else:
                 Enemy.spawn()
+
+    def invo_load(self):
+        with open("inventory.pickle", "rb") as file:
+            loaded_inventory = pickle.load(file)
+
+        print("Loaded Inventory:", loaded_inventory)
+    
+    def invo_save(self):
+        with open("inventory.pickle", "wb") as file:
+            pickle.dump(self.inventory, file)
+        print("Inventory Saved!")
