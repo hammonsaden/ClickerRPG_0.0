@@ -73,12 +73,14 @@ class Enemy:
             self.monster_spawn = True
         elif self.health <= 0:
             self.enemy_num = random.randint(1,10)
+            self.loot_drop(Player)
             self.health = self.max_health
             self.monster_spawn = True
             Player.xp += self.xp_val
             Player.invo_save()
         elif self.health <= 0 and self.enemy_num == 10:
             self.boss_spawn = False
+            self.loot_drop(Player)
             self.enemy_num = random.randint(1,10)
             self.health = self.max_health
             self.monster_spawn = True
@@ -91,19 +93,19 @@ class Enemy:
     
 
     def boss(self):
-        print("loading boss stats!")
         if self.boss_spawn == False:
             self.health *= 1.50
             self.max_health *= 1.50
             self.xp_val *=3
-            self.boss_spawn = True
             print("boss spawned and health and xp adjusted!")
+            self.boss_spawn = True
 
 
-    def loot_drop(self):
+    def loot_drop(self, Player):
         self.loot_roll = random.randint(1,len(loot_table))
+        print(self.loot_roll)
         
-        for x in loot_table:
-            print(x.key())
+        for k,v in Player.inventory.items():
+            print(k, v)
 
 
