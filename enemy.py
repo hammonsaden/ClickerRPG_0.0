@@ -1,6 +1,6 @@
 import pygame
 import random
-from constants import loot_table
+
 
 class Enemy:
     def __init__(self, Player):
@@ -9,7 +9,7 @@ class Enemy:
         self.max_health = self.level * 145
         self.enemy_num = None
         self.monster_rect = None
-        self.xp_val = 3
+        self.xp_val = int(self.level * 2 + (1.25))
         self.monster_spawn = False
         self.boss_spawn = False
         self.base_vals = {"health" : self.level * 145, "max_health" : self.level * 145, "xp_val" : 3}
@@ -66,27 +66,29 @@ class Enemy:
                 self.monster_spawn = False
                 self.spawn()
 
-    def spawn(self, Player):
+    def spawn(self, Player, Loot_sys):
         if self.monster_spawn == False:
             self.enemy_num = 10 # random.randint(1,10)
             self.health = self.max_health
             self.monster_spawn = True
-        elif self.health <= 0:
-            self.enemy_num = random.randint(1,10)
-            self.loot_drop(Player)
-            self.health = self.max_health
-            self.monster_spawn = True
-            Player.xp += self.xp_val
-            Player.invo_save()
         elif self.health <= 0 and self.enemy_num == 10:
             self.boss_spawn = False
-            self.loot_drop(Player)
+            Loot_sys.roll_for_rarity()
+            Loot_sys.generate_loot(Player)
             self.enemy_num = random.randint(1,10)
             self.health = self.max_health
             self.monster_spawn = True
             Player.xp += self.xp_val
-            Player.invo_save()
-
+            Player.save_Data()
+        elif self.health <= 0:
+            self.enemy_num = random.randint(1,10)
+            self.max_health = self.level * 145
+            self.xp_val = int(self.level * 2 + (1.25))
+            self.health = self.max_health
+            self.monster_spawn = True
+            Player.xp += self.xp_val
+            Player.save_Data()
+            
     def attack(self, dt):
         pass
 
@@ -100,12 +102,5 @@ class Enemy:
             print("boss spawned and health and xp adjusted!")
             self.boss_spawn = True
 
-
-    def loot_drop(self, Player):
-        self.loot_roll = random.randint(1,len(loot_table))
-        print(self.loot_roll)
-        
-        for k,v in Player.inventory.items():
-            print(k, v)
 
 

@@ -41,14 +41,7 @@ class Player:
        }
 
         # Inventory
-       self.inventory = {
-           'slot 1' : {"name" : "Twisted Wooden Staff"}, 
-           'slot 2' : {"name" : "Empty"},
-           'slot 3' : {"name" : "Empty"},
-           'slot 4' : {"name" : "Empty"},
-           'slot 5' : {"name" : "Empty"},
-           'slot 6' : {"name" : "Empty"}
-       }
+       self.inventory = {"slot 1" : "Twisted Wooden Staff", "slot 2" : "empty", "slot 3" : 'empty', 'slot 4' : 'empty', 'slot 5' : 'empty', 'slot 6' : 'empty'}
     def player_draw(self, screen, font):
 
         # Skill Slots
@@ -122,12 +115,43 @@ class Player:
                 Enemy.spawn()
 
     def invo_load(self):
-        with open("inventory.pickle", "rb") as file:
-            loaded_inventory = pickle.load(file)
+        try:
+            with open("save.pickle", "rb") as file:
+                loaded_data = pickle.load(file)
+                
+                self.level = loaded_data['level']
+                self.xp = loaded_data['xp']
+                self.intel = loaded_data['intel']
+                self.gold = loaded_data['gold']
+                self.current_spells = loaded_data['current_spells']
+                self.inventory = loaded_data['inventory']
 
-        print("Loaded Inventory:", loaded_inventory)
+            print(f"Loaded Stats: level : {self.level} xp : {self.xp} intellect : {self.intel} gold : {self.gold} currently equipped spells : {self.current_spells} inventory : {self.inventory}")
+        
+        except FileNotFoundError:
+            print("File is not found. Loading Default Attributes!")
     
-    def invo_save(self):
-        with open("inventory.pickle", "wb") as file:
-            pickle.dump(self.inventory, file)
-        print("Inventory Saved!")
+    def save_Data(self):
+        data = {
+            'level' : self.level,
+            'xp' : self.xp, 
+            'intel' : self.intel,
+            'gold' : self.gold,
+            'current_spells' : self.current_spells,
+            'inventory' : self.inventory
+        }
+        with open("save.pickle", "wb") as file:
+            pickle.dump(data, file)
+        print("All Data Saved!")
+    
+    def add_to_inventory(self, loot_item):
+        # Find the next empty slot in the inventory
+        empty_slot = next((slot for slot, item in self.inventory.items() if item == "empty"), None)
+
+        if empty_slot is not None:
+            # Add the item to the first empty slot
+            self.inventory[empty_slot] = loot_item
+            print(f"Added {loot_item} to inventory in {empty_slot}.")
+            print(self.inventory.values())
+        else:
+            print("Inventory is full. Cannot add the item.")

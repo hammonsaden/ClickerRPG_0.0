@@ -3,7 +3,7 @@ from constants import *
 from ui import UI
 from player import Player
 from enemy import Enemy
-
+from loot_sys import Loot_Sys
 class Game:
     def __init__(self):
         pygame.init()
@@ -14,8 +14,10 @@ class Game:
         self.UI = UI(self.state)
         self.Player = Player()
         self.Enemy = Enemy(self.Player)
+        self.Loot_Sys = Loot_Sys()
 
     def run(self):
+        self.Player.invo_load()
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -32,7 +34,6 @@ class Game:
                             self.state = "shop"
                         elif self.UI.invo_button.collidepoint(mouse_pos) and self.UI.invo_isclick == True:
                             print("Inventory Button Clicked!")
-                            self.Player.invo_load()
                             self.UI.invoclose_isclick = True
                             self.state = "invo"
                         elif self.Enemy.hit(self.state, mouse_pos):
@@ -55,13 +56,13 @@ class Game:
             dt = self.clock.tick() / 1000
 
             if self.state == "main":
-                self.UI.main_screen(self.Player, self.Enemy)
+                self.UI.main_screen(self.Player, self.Enemy, self.Loot_Sys)
 
             elif self.state == "shop":
                 self.UI.shop_screen(self.Player)
 
             elif self.state == "invo":
-                self.UI.inventory_screen(self.Player)
+                self.UI.inventory_screen(self.Player, self.Loot_Sys)
 
             pygame.display.update()
 
