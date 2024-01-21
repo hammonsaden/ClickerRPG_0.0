@@ -73,12 +73,11 @@ class Enemy:
             self.monster_spawn = True
         elif self.health <= 0 and self.enemy_num == 10:
             self.boss_spawn = False
-            Loot_sys.roll_for_rarity()
-            Loot_sys.generate_loot(Player)
             self.enemy_num = random.randint(1,10)
             self.health = self.max_health
             self.monster_spawn = True
             Player.xp += self.xp_val
+            Loot_sys.generate_loot(Player)
             Player.save_Data()
         elif self.health <= 0:
             self.enemy_num = random.randint(1,10)

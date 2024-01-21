@@ -14,12 +14,12 @@ class Loot_Sys:
     "Chipped Wooden Shield" : {"Intellect" : -1, "Damage" : 0, "Selling Price" : 4, "AC" : 2, "Rarity" : "Common"},
     "Shining Copper Ring" : {"Intellect" : 2, "Damage" : 1, "Selling Price" : 18, "AC" : 1, "Rarity" : "Rare"}
 }
-        self.drop_rates = {'Common' : 0.80, "Uncommon" : 0.15, "Rare" : 0.05}
+        self.drop_rates = {'Common' : 0.50, "Uncommon" : 0.80, "Rare" : 0.90, "Legendary" : 0.9999}
 
     def roll_for_rarity(self):
         # Generate a random number between 0 and 1
         roll = random.random()
-        print(roll)
+        print(f"rolled: {roll}")
         # Determine the rarity based on the drop rates
         for rarity, rate in self.drop_rates.items():
             if roll < rate:
@@ -28,12 +28,13 @@ class Loot_Sys:
     def generate_loot(self, Player):
         # Roll for rarity
         rarity = self.roll_for_rarity()
-
+        print(rarity)
         # Filter loot items based on the rolled rarity
         eligible_loot = {item: info for item, info in self.loot_table.items() if info['Rarity'] == rarity}
 
         # If there are eligible loot items, randomly select one
         if eligible_loot:
+            print(eligible_loot)
             selected_item = random.choice(list(eligible_loot.keys()))
             Player.add_to_inventory(selected_item)
         else:

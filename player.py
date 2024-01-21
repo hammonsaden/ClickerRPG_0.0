@@ -83,11 +83,14 @@ class Player:
             self.last_mana_update_time = current_time
         
     def start_casting_bar(self, num):
-        cast_time = self.skills_dict.get('fireball').get('cast_time')
-        self.mana -= self.skills_dict.get('fireball').get('mana_cost')
-        self.castbar_total_time = cast_time
-        self.castbar_start_time = pygame.time.get_ticks()
-        self.is_casting = True
+        if self.mana >= self.skills_dict['fireball']["mana_cost"]:
+            cast_time = self.skills_dict.get('fireball').get('cast_time')
+            self.mana -= self.skills_dict.get('fireball').get('mana_cost')
+            self.castbar_total_time = cast_time
+            self.castbar_start_time = pygame.time.get_ticks()
+            self.is_casting = True
+        else:
+            print("Not Enough Mana to Cast Spell, try again later!")
 
     def update_cast_bar(self, screen, Enemy):
         if self.castbar_start_time > 0:
