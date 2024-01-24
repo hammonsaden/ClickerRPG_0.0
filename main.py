@@ -4,6 +4,7 @@ from ui import UI
 from player import Player
 from enemy import Enemy
 from loot_sys import Loot_Sys
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -27,7 +28,6 @@ class Game:
                     if event.button == 1:
                         mouse_pos = pygame.mouse.get_pos()
                         # Inside the run method
-                        print(f"Current State: {self.state}")
                         if self.UI.shop_button.collidepoint(mouse_pos) and self.UI.shop_isclick == True:
                             print("Shop Button Clicked!")
                             self.UI.shopclose_isclick = True
@@ -36,33 +36,41 @@ class Game:
                             print("Inventory Button Clicked!")
                             self.UI.invoclose_isclick = True
                             self.state = "invo"
+                        elif self.UI.skilltree_button.collidepoint(mouse_pos) and self.UI.skilltree_isclick == True:
+                            print("Skill Tree Button Clicked!")
+                            self.UI.skilltreeclose_isclick = True
+                            self.state = "skill tree"
                         elif self.Enemy.hit(self.state, mouse_pos):
                             pass
                         else:
                             pass
 
-
+                        # Screen Close Buttons Loop
                         if self.UI.invo_close.collidepoint(mouse_pos) and self.UI.invoclose_isclick == True:
                             self.state = 'main'
                         elif self.UI.shop_close.collidepoint(mouse_pos) and self.UI.shopclose_isclick == True:
                             self.state = 'main'
+                        elif self.UI.skilltree_close.collidepoint(mouse_pos) and self.UI.skilltreeclose_isclick == True:
+                            self.state = 'main'
 
+                # Spell Handling Event Loop
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_1:
                         if self.Player.is_casting == False:
                             self.Player.start_casting_bar(1)
                         else:
                             print("Already casting!")
+            
             dt = self.clock.tick() / 1000
 
             if self.state == "main":
                 self.UI.main_screen(self.Player, self.Enemy, self.Loot_Sys)
-
             elif self.state == "shop":
                 self.UI.shop_screen(self.Player)
-
             elif self.state == "invo":
                 self.UI.inventory_screen(self.Player, self.Loot_Sys)
+            elif self.state == "skill tree":
+                self.UI.skilltree_screen(self.Player)
 
             pygame.display.update()
 

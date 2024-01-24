@@ -7,13 +7,29 @@ class Enemy:
         self.level = Player.level
         self.health = self.level * 145
         self.max_health = self.level * 145
+        self.bosshealth = self.health * 1.50
+        self.boss_maxhealth = self.max_health * 1.50
         self.enemy_num = None
         self.monster_rect = None
         self.xp_val = int(self.level * 2 + (1.25))
+        self.bossxp_val = self.xp_val * 4
         self.monster_spawn = False
         self.boss_spawn = False
         self.base_vals = {"health" : self.level * 145, "max_health" : self.level * 145, "xp_val" : 3}
         self.loot_roll = None
+
+        # Attacks
+        self.last_hit_time = 0
+        self.hit_interval = 2000
+        self.damage = 10
+
+
+
+        # Cast Bar
+        self.cast_bar_width = 150
+        self.cast_bar_height = 10
+        self.cast_bar_color = "Grey"
+        self.cast_bar_rect = pygame.Rect(250, 270, self.cast_bar_width,self.cast_bar_height)
 
     def enemy_gen(self, screen, font):
 
@@ -67,18 +83,26 @@ class Enemy:
                 self.spawn()
 
     def spawn(self, Player, Loot_sys):
+        # If no enemy is spawned in..
         if self.monster_spawn == False:
             self.enemy_num = 10 # random.randint(1,10)
             self.health = self.max_health
             self.monster_spawn = True
+        # If a boss is killed..
         elif self.health <= 0 and self.enemy_num == 10:
             self.boss_spawn = False
             self.enemy_num = random.randint(1,10)
-            self.health = self.max_health
+            # self.health = self.max_health
             self.monster_spawn = True
             Player.xp += self.xp_val
             Loot_sys.generate_loot(Player)
+            Player.reset_fight()
+            # Set the health back to regular amounts
+            self.health = self.level * 145
+            self.max_health = self.level * 145
+            self.xp_val = int(self.level * 2 + (1.25))
             Player.save_Data()
+        # If a regular enemy is killed..
         elif self.health <= 0:
             self.enemy_num = random.randint(1,10)
             self.max_health = self.level * 145
@@ -86,18 +110,35 @@ class Enemy:
             self.health = self.max_health
             self.monster_spawn = True
             Player.xp += self.xp_val
+            Player.reset_fight()
             Player.save_Data()
             
-    def attack(self, dt):
-        pass
+    def attack(self, Player):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_hit_time >= self.hit_interval:
+            Player.health -= self.damage
+            print(f"Player hit for {self.damage} damage!")
+            self.last_hit_time = current_time
+        
+    def draw_cast_bar(self, screen):
+        current_time = pygame.time.get_ticks()
+        # Draw cast bar background
+        pygame.draw.rect(screen, "WHITE", (self.cast_bar_rect.x, self.cast_bar_rect.y, self.cast_bar_width, self.cast_bar_height), border_radius=10)
 
+        # Calculate fill percentage based on remaining cooldown time
+        fill_percentage = max(0, (current_time - self.last_hit_time) / self.hit_interval)
+
+        # Draw filled portion of cast bar
+        fill_width = int(self.cast_bar_width * fill_percentage)
+        fill_rect = pygame.Rect(self.cast_bar_rect.x, self.cast_bar_rect.y, fill_width, self.cast_bar_height, border_radius=10)
+        pygame.draw.rect(screen, self.cast_bar_color, fill_rect, border_radius=10)
     
 
     def boss(self):
         if self.boss_spawn == False:
-            self.health *= 1.50
-            self.max_health *= 1.50
-            self.xp_val *=3
+            self.health = self.bosshealth
+            self.max_health = self.boss_maxhealth
+            self.xp_val = self.bossxp_val
             print("boss spawned and health and xp adjusted!")
             self.boss_spawn = True
 
