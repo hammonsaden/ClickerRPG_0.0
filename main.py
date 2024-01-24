@@ -40,7 +40,7 @@ class Game:
                             print("Skill Tree Button Clicked!")
                             self.UI.skilltreeclose_isclick = True
                             self.state = "skill tree"
-                        elif self.Enemy.hit(self.state, mouse_pos):
+                        elif self.Enemy.hit(self.state, mouse_pos, self.Player):
                             pass
                         else:
                             pass
@@ -60,7 +60,39 @@ class Game:
                             self.Player.start_casting_bar(1)
                         else:
                             print("Already casting!")
-            
+                    if event.key == pygame.K_2:
+                        clicked_item = self.Player.inventory['slot 1']
+                        self.Player.equip(clicked_item, self.Loot_Sys)
+                    
+                    if self.state == 'invo':
+                        if event.key == pygame.K_e:
+                            if self.UI.invo_slot1.collidepoint(pygame.mouse.get_pos()):
+                                self.Player.equip(self.Player.inventory['slot 1'], self.Loot_Sys)
+                            elif self.UI.invo_slot2.collidepoint(pygame.mouse.get_pos()):
+                                self.Player.equip(self.Player.inventory['slot 2'], self.Loot_Sys)
+                            elif self.UI.invo_slot3.collidepoint(pygame.mouse.get_pos()):
+                                self.Player.equip(self.Player.inventory['slot 3'], self.Loot_Sys)
+                            elif self.UI.invo_slot4.collidepoint(pygame.mouse.get_pos()):
+                                self.Player.equip(self.Player.inventory['slot 4'], self.Loot_Sys)
+                            elif self.UI.invo_slot5.collidepoint(pygame.mouse.get_pos()):
+                                self.Player.equip(self.Player.inventory['slot 5'], self.Loot_Sys)
+                            elif self.UI.invo_slot6.collidepoint(pygame.mouse.get_pos()):
+                                self.Player.equip(self.Player.inventory['slot 6'], self.Loot_Sys)
+                            elif self.UI.invo_slot7.collidepoint(pygame.mouse.get_pos()):
+                                self.Player.equip(self.Player.inventory['slot 7'], self.Loot_Sys)
+                            elif self.UI.invo_slot8.collidepoint(pygame.mouse.get_pos()):
+                                self.Player.equip(self.Player.inventory['slot 8'], self.Loot_Sys)
+                            elif self.UI.invo_slot9.collidepoint(pygame.mouse.get_pos()):
+                                self.Player.equip(self.Player.inventory['slot 9'], self.Loot_Sys)
+                            elif self.UI.invo_slot10.collidepoint(pygame.mouse.get_pos()):
+                                self.Player.equip(self.Player.inventory['slot 10'], self.Loot_Sys)
+                            elif self.UI.invo_slot11.collidepoint(pygame.mouse.get_pos()):
+                                self.Player.equip(self.Player.inventory['slot 11'], self.Loot_Sys)
+                            elif self.UI.invo_slot12.collidepoint(pygame.mouse.get_pos()):
+                                self.Player.equip(self.Player.inventory['slot 12'], self.Loot_Sys)
+                            else:
+                                pass
+
             dt = self.clock.tick() / 1000
 
             if self.state == "main":

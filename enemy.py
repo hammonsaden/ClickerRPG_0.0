@@ -73,10 +73,10 @@ class Enemy:
             monster_health = font.render(f"{int(self.health)} / {self.max_health}", True, 'white')
             screen.blit(monster_health, (self.enemy_healthbarbg.centerx - 25, self.enemy_healthbarbg.centery - 5))
 
-    def hit(self, state, mouse_pos):
+    def hit(self, state, mouse_pos, Player):
         if state == 'main':
             if self.health > 0:
-                self.health -= 2
+                self.health -= Player.dmg
                 return self.monster_rect.collidepoint(mouse_pos)
             else:
                 self.monster_spawn = False

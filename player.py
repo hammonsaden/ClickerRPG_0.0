@@ -11,6 +11,7 @@ class Player:
        self.gold = 150
        self.xp = 0
        self.xp_needed = int((self.level * 1.35) * 100)
+       self.dmg = 0
 
        # Mana
        self.mana = 100
@@ -155,8 +156,9 @@ class Player:
                 self.gold = loaded_data['gold']
                 self.current_spells = loaded_data['current_spells']
                 self.inventory = loaded_data['inventory']
+                self.currently_equip = loaded_data['currently_equip']
 
-            print(f"Loaded Stats: level : {self.level} xp : {self.xp} intellect : {self.intel} gold : {self.gold} currently equipped spells : {self.current_spells} inventory : {self.inventory}")
+            print(f"Loaded Stats: level : {self.level} xp : {self.xp} intellect : {self.intel} gold : {self.gold} currently equipped spells : {self.current_spells} inventory : {self.inventory} currently equipped items: {self.currently_equip}")
         
         except FileNotFoundError:
             print("File is not found. Loading Default Attributes!")
@@ -168,7 +170,8 @@ class Player:
             'intel' : self.intel,
             'gold' : self.gold,
             'current_spells' : self.current_spells,
-            'inventory' : self.inventory
+            'inventory' : self.inventory,
+            'currently_equip' : self.currently_equip
         }
         with open("save.pickle", "wb") as file:
             pickle.dump(data, file)
@@ -185,3 +188,26 @@ class Player:
             print(self.inventory.values())
         else:
             print("Inventory is full. Cannot add the item.")
+    
+    def equip(self, equipment, Loot_Sys):
+        if equipment in self.inventory.values():
+            slot = Loot_Sys.loot_table[equipment]['slot']
+
+            if slot in self.currently_equip:
+
+                if self.currently_equip[slot]:
+                    print("Unequipped item!")
+                    self.unequip(slot)
+                
+            self.currently_equip[slot] = equipment
+            self.intel += Loot_Sys.loot_table[equipment]['Intellect']
+            self.dmg += Loot_Sys.loot_table[equipment]['Damage']
+            print(f"Equipped {equipment} in {slot}")
+            print(f'intellect {self.intel}')
+            print(f'damage: {self.dmg}')
+
+    def unequip(self, slot):
+        # Unequip the item from the specified slot
+        unequipped_item = self.currently_equip[slot]
+        self.currently_equip[slot] = 'empty'
+

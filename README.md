@@ -19,3 +19,9 @@
 - Added 6 more slots to the Player inventory, and also made the spot for the player equip system!
 - Added Player equipped attribute to Player Class
 - Made Mouseovers for Player Equipment
+
+1.03 Changelog (1/24/2024)
+- Added currently equip items to the save/load system
+- Player is allowed to equip items in inventory slot by hovering over the desired item and pressing 'E'
+
+- still need to take away the intellect and damage from player count when item is unequipped.
