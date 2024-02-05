@@ -36,6 +36,15 @@ class Player:
        self.castbar_start_time = None
        self.castbar_total_time = None
 
+       # Auto Attack
+       self.last_hit_time = 0
+       self.hit_interval = 2000
+
+       self.AA_bar_width = 150
+       self.AA_bar_height = 10
+       self.AA_bar_color = "white"
+       self.AA_bar_rect = pygame.Rect(250, 270, self.AA_bar_width,self.AA_bar_height)
+
        # Skills list
        self.current_spells = ['fireball']
        self.skills_dict = {'fireball' : {'damage' : 25,'mana_cost' : 20,'cast_time' : 2000, 'cd' : 1500, 'required_level' : 1}, 
@@ -197,7 +206,7 @@ class Player:
 
                 if self.currently_equip[slot]:
                     print("Unequipped item!")
-                    self.unequip(slot)
+                    self.unequip(slot, Loot_Sys)
                 
             self.currently_equip[slot] = equipment
             self.intel += Loot_Sys.loot_table[equipment]['Intellect']
@@ -206,8 +215,34 @@ class Player:
             print(f'intellect {self.intel}')
             print(f'damage: {self.dmg}')
 
-    def unequip(self, slot):
+    def unequip(self, slot, Loot_Sys):
         # Unequip the item from the specified slot
         unequipped_item = self.currently_equip[slot]
-        self.currently_equip[slot] = 'empty'
+        if unequipped_item != "empty":
+            self.intel -= Loot_Sys.loot_table[unequipped_item]['Intellect']
+            self.dmg -= Loot_Sys.loot_table[unequipped_item]['Damage']
+            self.currently_equip[slot] = 'empty'
+        else:
+            print("Slot empty passed!")
+            pass
+    
 
+    def attack(self, Enemy):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_hit_time >= self.hit_interval:
+            Enemy.health -= self.dmg
+            print(f"Player hit for {self.dmg} damage!")
+            self.last_hit_time = current_time
+    
+    def draw_AA_bar(self, screen):
+        current_time = pygame.time.get_ticks()
+        # Draw cast bar background
+        pygame.draw.rect(screen, "WHITE", (self.AA_bar_rect.x, self.AA_bar_rect.y, self.AA_bar_width, self.AA_bar_height), border_radius=10)
+
+        # Calculate fill percentage based on remaining cooldown time
+        fill_percentage = max(0, (current_time - self.last_hit_time) / self.hit_interval)
+
+        # Draw filled portion of cast bar
+        fill_width = int(self.AA_bar_width * fill_percentage)
+        fill_rect = pygame.Rect(self.AA_bar_rect.x, self.AA_bar_rect.y, fill_width, self.AA_bar_height, border_radius=10)
+        pygame.draw.rect(screen, self.AA_bar_color, fill_rect, border_radius=10)

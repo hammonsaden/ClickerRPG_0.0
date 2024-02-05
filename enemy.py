@@ -117,7 +117,7 @@ class Enemy:
         current_time = pygame.time.get_ticks()
         if current_time - self.last_hit_time >= self.hit_interval:
             Player.health -= self.damage
-            print(f"Player hit for {self.damage} damage!")
+            print(f"Enemy hit for {self.damage} damage!")
             self.last_hit_time = current_time
         
     def draw_cast_bar(self, screen):

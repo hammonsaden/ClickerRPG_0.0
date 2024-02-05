@@ -24,4 +24,8 @@
 - Added currently equip items to the save/load system
 - Player is allowed to equip items in inventory slot by hovering over the desired item and pressing 'E'
 
+1.04 Changelog (2/5/2024)
 - still need to take away the intellect and damage from player count when item is unequipped.
+- Added more items to the Database (Upto 16 total different drops!)
+
+- Need to work on adding player auto attack method in the player class, so the player can use their damage to attack.

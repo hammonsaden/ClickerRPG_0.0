@@ -39,6 +39,8 @@ class UI:
         Player.manaandhealth_regen()
         Enemy.draw_cast_bar(self.display_surface)
         Enemy.attack(Player)
+        Player.draw_AA_bar(self.display_surface)
+        Player.attack(Enemy)
             
         # Casting
         if Player.is_casting:
